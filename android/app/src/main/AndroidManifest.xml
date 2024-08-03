@@ -3,6 +3,10 @@
         android:label="tomamoni"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8243405002982782~9184311449"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
