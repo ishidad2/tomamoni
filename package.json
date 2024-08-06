@@ -8,10 +8,11 @@
     "husky": "^8.0.0"
   },
   "scripts": {
-    "prettier": "dart format lib",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "lint-staged": {
-    "*.@(dart)": "prettier --write --ignore-unknown"
+    "*.dart": [
+      "fvm flutter format"
+    ]
   }
 }
