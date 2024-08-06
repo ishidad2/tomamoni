@@ -10,7 +10,8 @@ final symbolWebSocketServiceProvider = Provider<SymbolWebSocketService>((ref) {
 });
 
 // SymbolWebSocketRepositoryのインスタンスを提供するプロバイダー
-final symbolWebSocketRepositoryProvider = Provider<SymbolWebSocketRepository>((ref) {
+final symbolWebSocketRepositoryProvider =
+    Provider<SymbolWebSocketRepository>((ref) {
   final service = ref.watch(symbolWebSocketServiceProvider);
   return SymbolWebSocketRepository(service);
 });
