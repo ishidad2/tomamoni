@@ -5,11 +5,32 @@ import 'providers/block_provider.dart'; // プロバイダーをインポート
 import 'providers/transaction_provider.dart';
 import 'widgets/ad_banner.dart'; // ad_banner.dartファイルをインポート
 import 'widgets/radial_text_pointer.dart'; // radial_text_pointer.dartファイルをインポート
+import 'config/config.dart';
 
 void main() {
   // Mobile Ads SDKの初期化
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
+
+  // 環境の切り替え設定
+  const environment =
+      String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
+  switch (environment) {
+    case 'production':
+      print('+++++++++++++++++++++++++++++++');
+      print('+ starting app in $environment mode +');
+      print('+++++++++++++++++++++++++++++++');
+      AppConfig.setEnvironment(Environment.production);
+      break;
+    case 'staging':
+      print('==== starting app in $environment mode ====');
+      AppConfig.setEnvironment(Environment.staging);
+      break;
+    default:
+      print('==== starting app in $environment mode ====');
+      AppConfig.setEnvironment(Environment.development);
+  }
+
   runApp(const ProviderScope(child: MyApp())); // ProviderScopeでラップする
 }
 
