@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import '../config/config.dart';
 
 class SymbolWebSocketService {
   WebSocket? _webSocket;
@@ -10,10 +11,10 @@ class SymbolWebSocketService {
   String? _uid;
 
   /// WebSocket接続を確立して新しいブロックをリスニングします
-  Future<void> connect(String nodeUrl) async {
+  Future<void> connect() async {
     try {
       // WebSocket接続を確立する
-      _webSocket = await WebSocket.connect(nodeUrl);
+      _webSocket = await WebSocket.connect(AppConfig.symbolNodeUrl);
 
       print('WebSocket connection opened.');
 

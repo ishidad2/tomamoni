@@ -1,5 +1,6 @@
 // providers/block_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'transaction_provider.dart';
 import '../models/block.dart';
 import '../repositories/symbol_websocket_repository.dart';
 import '../services/symbol_websocket_service.dart';
@@ -17,16 +18,33 @@ final symbolWebSocketRepositoryProvider =
 });
 
 // ブロックのストリームを監視するプロバイダー
+// final blockStreamProvider = StreamProvider<List<Block>>((ref) async* {
+//   final repository = ref.watch(symbolWebSocketRepositoryProvider);
+//   const nodeUrl = 'ws://dual-1.nodes-xym.work:3000/ws'; // ここにノードのURLを設定
+
+//   await repository.connect(nodeUrl);
+
+//   List<Block> blocks = [];
+
+//   await for (final block in repository.blockStream) {
+//     blocks = [block, ...blocks]; // 新しいブロックをリストに追加
+//     yield blocks; // 更新されたリストを供給
+//   }
+// });
+
 final blockStreamProvider = StreamProvider<List<Block>>((ref) async* {
   final repository = ref.watch(symbolWebSocketRepositoryProvider);
-  const nodeUrl = 'ws://dual-1.nodes-xym.work:3000/ws'; // ここにノードのURLを設定
 
-  await repository.connect(nodeUrl);
+  await repository.connect();
 
   List<Block> blocks = [];
 
   await for (final block in repository.blockStream) {
-    blocks = [block, ...blocks]; // 新しいブロックをリストに追加
-    yield blocks; // 更新されたリストを供給
+    blocks = [block, ...blocks];
+    // 新しいブロックのトランザクションを取得
+    ref
+        .read(transactionProvider.notifier)
+        .fetchTransactionsForBlock(block.height.toString());
+    yield blocks;
   }
 });

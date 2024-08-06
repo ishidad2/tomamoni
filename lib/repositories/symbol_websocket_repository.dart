@@ -9,8 +9,8 @@ class SymbolWebSocketRepository {
   SymbolWebSocketRepository(this._webSocketService);
 
   /// WebSocket接続を確立し、ブロックのストリームを取得します
-  Future<void> connect(String nodeUrl) async {
-    await _webSocketService.connect(nodeUrl);
+  Future<void> connect() async {
+    await _webSocketService.connect();
   }
 
   /// 新しいブロックのストリームを取得します
