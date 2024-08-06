@@ -78,7 +78,8 @@ class RadialGaugeScreen extends ConsumerWidget {
           children: [
             CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text('新規ブロック監視中...\nしばらくお待ちください', style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+            Text('新規ブロック監視中...\nしばらくお待ちください',
+                style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
           ],
         ),
       ), // 読み込み中の表示

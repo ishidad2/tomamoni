@@ -5,7 +5,8 @@ import 'dart:io';
 
 class SymbolWebSocketService {
   WebSocket? _webSocket;
-  final StreamController<Map<String, dynamic>> _blockController = StreamController<Map<String, dynamic>>.broadcast();
+  final StreamController<Map<String, dynamic>> _blockController =
+      StreamController<Map<String, dynamic>>.broadcast();
   String? _uid;
 
   /// WebSocket接続を確立して新しいブロックをリスニングします
@@ -25,7 +26,8 @@ class SymbolWebSocketService {
             _uid = response['uid'];
             print('UID received: $_uid');
             _subscribeToBlockChannel(); // UIDを受信した後にブロックチャネルを購読
-          } else if (response.containsKey('data') && response['data'].containsKey('block')) {
+          } else if (response.containsKey('data') &&
+              response['data'].containsKey('block')) {
             _blockController.add(response['data']['block']);
           }
         },
@@ -45,10 +47,7 @@ class SymbolWebSocketService {
   /// ブロックチャネルを購読します
   void _subscribeToBlockChannel() {
     if (_uid != null) {
-      sendMessage(json.encode({
-        'uid': _uid,
-        'subscribe': 'block'
-      }));
+      sendMessage(json.encode({'uid': _uid, 'subscribe': 'block'}));
     }
   }
 
