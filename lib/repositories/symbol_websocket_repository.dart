@@ -1,68 +1,25 @@
+// サービスクラスを使用してWebSocket接続を管理し、データのストリームを提供
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
+import '../services/symbol_websocket_service.dart';
+import '../models/block.dart';
 
 class SymbolWebSocketRepository {
-  WebSocket? _webSocket;
-  final StreamController<Map<String, dynamic>> _blockController = StreamController<Map<String, dynamic>>.broadcast();
-  String? _uid;
+  final SymbolWebSocketService _webSocketService;
 
-  /// WebSocket接続を確立して新しいブロックをリスニングします
+  SymbolWebSocketRepository(this._webSocketService);
+
+  /// WebSocket接続を確立し、ブロックのストリームを取得します
   Future<void> connect(String nodeUrl) async {
-    try {
-      _webSocket = await WebSocket.connect('$nodeUrl/ws');
-
-      _webSocket!.listen(
-        (data) {
-          print("=============== web socket  ===============");
-          print(data);
-          final Map<String, dynamic> response = json.decode(data);
-          if (response.containsKey('uid')) {
-            _uid = response['uid'];
-            print('UID received: $_uid');
-            _subscribeToBlockChannel(); // UIDを受信した後にブロックチャネルを購読
-          } else {
-            _blockController.add(response);
-          }
-        },
-        onDone: () {
-          print('WebSocket connection closed.');
-          _blockController.close();
-        },
-        onError: (error) {
-          print('WebSocket error: $error');
-        },
-      );
-    } catch (error) {
-      print('Error connecting to WebSocket: $error');
-    }
-  }
-
-  /// ブロックチャネルを購読します
-  void _subscribeToBlockChannel() {
-    if (_uid != null) {
-      sendMessage(json.encode({
-        'uid': _uid,
-        'subscribe': 'block'
-      }));
-    }
-  }
-
-  /// WebSocketを通じてメッセージを送信します
-  void sendMessage(String message) {
-    if (_webSocket != null && _webSocket!.readyState == WebSocket.open) {
-      _webSocket!.add(message);
-    } else {
-      print('WebSocket is not connected.');
-    }
+    await _webSocketService.connect(nodeUrl);
   }
 
   /// 新しいブロックのストリームを取得します
-  Stream<Map<String, dynamic>> get blockStream => _blockController.stream;
+  Stream<Block> get blockStream {
+    return _webSocketService.blockStream.map((blockData) => Block.fromJson(blockData));
+  }
 
   /// WebSocket接続を閉じます
   void dispose() {
-    _webSocket?.close();
-    _blockController.close();
+    _webSocketService.dispose();
   }
 }
