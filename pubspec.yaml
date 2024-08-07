@@ -15,6 +15,7 @@ dependencies:
   symbol_sdk: ^1.0.19
   flutter_riverpod: ^2.5.1
   cupertino_icons: ^1.0.6
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
