@@ -16,9 +16,9 @@ void main() async {
   // ノード設定の読み込み
   final prefs = SharedPreferencesInstance.instance;
   final selectedNodeHost = prefs.getString('selectedNodeHost') ??
-      'https://dual-1.nodes-xym.work:3001';
+      'https://sym-main-03.opening-line.jp:3001';
   final selectedNodeWebsocket = prefs.getString('selectedNodeWebsocket') ??
-      'wss://dual-1.nodes-xym.work:3001/ws';
+      'wss://sym-main-03.opening-line.jp:3001/ws';
 
   runApp(
     ProviderScope(

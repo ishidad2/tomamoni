@@ -24,9 +24,6 @@ class AppConfig {
   static final Map<String, List<NodeConfig>> nodeConfigs = {
     'mainnet': [
       NodeConfig(
-          host: 'https://dual-1.nodes-xym.work:3001',
-          websocket: 'wss://dual-1.nodes-xym.work:3001/ws'),
-      NodeConfig(
           host: 'https://sym-main-03.opening-line.jp:3001',
           websocket: 'wss://sym-main-03.opening-line.jp:3001/ws'),
       NodeConfig(
