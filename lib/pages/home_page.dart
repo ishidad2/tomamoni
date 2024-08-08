@@ -7,6 +7,7 @@ import '../widgets/ad_banner.dart';
 import '../widgets/radial_text_pointer.dart';
 import '../providers/namespace_provider.dart';
 import '../widgets/scrolling_tomato_namespaces.dart';
+import '../widgets/tomato_pie_chart.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key, this.title = 'Tomamoni'});
@@ -26,6 +27,14 @@ class HomePageState extends ConsumerState<HomePage> {
     final blocksAsyncValue = ref.watch(blockStreamProvider);
     final transactionsAsyncValue = ref.watch(transactionProvider);
 
+    // サンプルデータ
+    Map<String, int> tomatoData = {
+      'Cherry Tomato': 35,
+      'Roma Tomato': 40,
+      'Beefsteak Tomato': 25,
+      'Heirloom Tomato': 30,
+    };
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -42,7 +51,8 @@ class HomePageState extends ConsumerState<HomePage> {
                 children: [
                   ScrollingTomatoNamespaces(namespaces: namespaces),
                   const SizedBox(height: 20),
-                  const RadialTextPointer(value: 82.0),
+                  // const RadialTextPointer(value: 82.0),
+                  TomatoPieChart(tomatoData: tomatoData),
                   const SizedBox(height: 20),
                   Expanded(
                     child: blocksAsyncValue.when(
