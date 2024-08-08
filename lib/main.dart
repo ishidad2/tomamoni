@@ -13,30 +13,27 @@ void main() async {
   // Mobile Ads SDKの初期化
   MobileAds.instance.initialize();
 
-  // 環境の切り替え設定
-  const environment =
-      String.fromEnvironment('ENVIRONMENT', defaultValue: 'development');
-  switch (environment) {
-    case 'production':
-      print('+++++++++++++++++++++++++++++++');
-      print('+ starting app in $environment mode +');
-      print('+++++++++++++++++++++++++++++++');
-      AppConfig.setEnvironment(Environment.production);
-      break;
-    case 'staging':
-      print('==== starting app in $environment mode ====');
-      AppConfig.setEnvironment(Environment.staging);
-      break;
-    default:
-      print('==== starting app in $environment mode ====');
-      AppConfig.setEnvironment(Environment.development);
-  }
+  // ノード設定の読み込み
+  final prefs = SharedPreferencesInstance.instance;
+  final selectedNodeHost = prefs.getString('selectedNodeHost') ??
+      'https://dual-1.nodes-xym.work:3001';
+  final selectedNodeWebsocket = prefs.getString('selectedNodeWebsocket') ??
+      'wss://dual-1.nodes-xym.work:3001/ws';
+
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      overrides: [
+        nodeConfigProvider.overrideWithValue(NodeConfig(
+            host: selectedNodeHost, websocket: selectedNodeWebsocket)),
+      ],
+      child: const MyApp(),
     ),
   );
 }
+
+// ノード設定のプロバイダー
+final nodeConfigProvider =
+    Provider<NodeConfig>((ref) => throw UnimplementedError());
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});

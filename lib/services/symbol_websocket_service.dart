@@ -1,32 +1,39 @@
-// WebSocket接続の管理とデータのストリーミングを担当
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/config.dart';
+import '../providers/node_config_provider.dart';
+
+final symbolWebSocketServiceProvider = Provider<SymbolWebSocketService>((ref) {
+  final nodeConfig = ref.watch(nodeConfigProvider);
+  return SymbolWebSocketService(nodeConfig);
+});
 
 class SymbolWebSocketService {
   WebSocket? _webSocket;
   final StreamController<Map<String, dynamic>> _blockController =
       StreamController<Map<String, dynamic>>.broadcast();
   String? _uid;
+  final NodeConfig nodeConfig;
 
-  /// WebSocket接続を確立して新しいブロックをリスニングします
+  SymbolWebSocketService(this.nodeConfig);
+
   Future<void> connect() async {
     try {
-      // WebSocket接続を確立する
-      _webSocket = await WebSocket.connect(AppConfig.symbolNodeUrl);
+      _webSocket = await WebSocket.connect(nodeConfig.websocket);
 
       print('WebSocket connection opened.');
 
       _webSocket!.listen(
         (data) {
-          print('Data received: $data'); // 受信データをログに出力
+          print('Data received: $data');
 
           final Map<String, dynamic> response = json.decode(data);
           if (response.containsKey('uid')) {
             _uid = response['uid'];
             print('UID received: $_uid');
-            _subscribeToBlockChannel(); // UIDを受信した後にブロックチャネルを購読
+            _subscribeToBlockChannel();
           } else if (response.containsKey('data') &&
               response['data'].containsKey('block')) {
             _blockController.add(response['data']['block']);
@@ -45,14 +52,12 @@ class SymbolWebSocketService {
     }
   }
 
-  /// ブロックチャネルを購読します
   void _subscribeToBlockChannel() {
     if (_uid != null) {
       sendMessage(json.encode({'uid': _uid, 'subscribe': 'block'}));
     }
   }
 
-  /// WebSocketを通じてメッセージを送信します
   void sendMessage(String message) {
     if (_webSocket != null && _webSocket!.readyState == WebSocket.open) {
       _webSocket!.add(message);
@@ -61,10 +66,8 @@ class SymbolWebSocketService {
     }
   }
 
-  /// 新しいブロックのストリームを取得します
   Stream<Map<String, dynamic>> get blockStream => _blockController.stream;
 
-  /// WebSocket接続を閉じます
   void dispose() {
     _webSocket?.close();
     _blockController.close();

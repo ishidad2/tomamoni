@@ -1,19 +1,19 @@
+// lib/share_preferences_instance.dart
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// SharedPreferenceのインスタンスを保持するシングルトン・クラス
-
 class SharedPreferencesInstance {
-  static late final SharedPreferences _prefs;
-  SharedPreferences get prefs => _prefs;
+  static SharedPreferences? _preferences;
 
-  static final SharedPreferencesInstance _instance =
-      SharedPreferencesInstance._internal();
+  static Future<void> initialize() async {
+    _preferences = await SharedPreferences.getInstance();
+  }
 
-  SharedPreferencesInstance._internal();
-
-  factory SharedPreferencesInstance() => _instance;
-
-  static initialize() async {
-    _prefs = await SharedPreferences.getInstance();
+  static SharedPreferences get instance {
+    if (_preferences == null) {
+      throw Exception(
+          "SharedPreferences has not been initialized. Call initialize() first.");
+    }
+    return _preferences!;
   }
 }

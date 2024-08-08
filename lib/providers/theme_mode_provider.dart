@@ -1,11 +1,11 @@
+// lib/providers/theme_mode_provider.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../share_preferences_instance.dart';
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   static const String keyThemeMode = 'theme_mode';
-
-  final _prefs = SharedPreferencesInstance().prefs;
 
   ThemeModeNotifier() : super(ThemeMode.system) {
     state = _loadThemeMode() ?? ThemeMode.system;
@@ -32,7 +32,7 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   }
 
   ThemeMode? _loadThemeMode() {
-    final loaded = _prefs.getString(keyThemeMode);
+    final loaded = SharedPreferencesInstance.instance.getString(keyThemeMode);
     if (loaded == null) {
       return null;
     }
@@ -40,7 +40,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   }
 
   Future<bool> _saveThemeMode(ThemeMode themeMode) =>
-      _prefs.setString(keyThemeMode, themeMode.name);
+      SharedPreferencesInstance.instance
+          .setString(keyThemeMode, themeMode.name);
 }
 
 final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(

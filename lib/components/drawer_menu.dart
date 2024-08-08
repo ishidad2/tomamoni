@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './theme_model_tile.dart';
 import '../pages/home_page.dart';
+import '../pages/node_settings_page.dart';
 
 class DrawerMenu extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -28,6 +29,17 @@ class DrawerMenu extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const HomePage(),
                 ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('ノード設定'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NodeSettingsPage()),
               );
             },
           ),

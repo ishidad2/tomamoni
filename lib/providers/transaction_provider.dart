@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:symbol_rest_client/api.dart';
 import '../repositories/transaction_repository.dart';
-import '../config/config.dart';
+import '../providers/node_config_provider.dart';
 
 final transactionApiProvider = Provider((ref) {
+  final nodeConfig = ref.watch(nodeConfigProvider);
   final apiClient = ApiClient(
-    basePath: AppConfig.symbolRestGatewayUrl, // SymbolのRESTゲートウェイのURLを指定
+    basePath: nodeConfig.host, // 動的なノード設定を使用
   );
   return TransactionRoutesApi(apiClient);
 });

@@ -4,10 +4,12 @@ import 'transaction_provider.dart';
 import '../models/block.dart';
 import '../repositories/symbol_websocket_repository.dart';
 import '../services/symbol_websocket_service.dart';
+import '../providers/node_config_provider.dart';
 
 // SymbolWebSocketServiceのインスタンスを提供するプロバイダー
 final symbolWebSocketServiceProvider = Provider<SymbolWebSocketService>((ref) {
-  return SymbolWebSocketService();
+  final nodeConfig = ref.watch(nodeConfigProvider);
+  return SymbolWebSocketService(nodeConfig);
 });
 
 // SymbolWebSocketRepositoryのインスタンスを提供するプロバイダー
@@ -18,20 +20,6 @@ final symbolWebSocketRepositoryProvider =
 });
 
 // ブロックのストリームを監視するプロバイダー
-// final blockStreamProvider = StreamProvider<List<Block>>((ref) async* {
-//   final repository = ref.watch(symbolWebSocketRepositoryProvider);
-//   const nodeUrl = 'ws://dual-1.nodes-xym.work:3000/ws'; // ここにノードのURLを設定
-
-//   await repository.connect(nodeUrl);
-
-//   List<Block> blocks = [];
-
-//   await for (final block in repository.blockStream) {
-//     blocks = [block, ...blocks]; // 新しいブロックをリストに追加
-//     yield blocks; // 更新されたリストを供給
-//   }
-// });
-
 final blockStreamProvider = StreamProvider<List<Block>>((ref) async* {
   final repository = ref.watch(symbolWebSocketRepositoryProvider);
 
