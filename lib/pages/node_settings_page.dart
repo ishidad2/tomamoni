@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/config.dart';
-import '../share_preferences_instance.dart';
+import '../utils/share_preferences_instance.dart';
 import '../providers/node_config_provider.dart';
 
 class NodeSettingsPage extends ConsumerStatefulWidget {
+  const NodeSettingsPage({super.key});
+
   @override
-  _NodeSettingsPageState createState() => _NodeSettingsPageState();
+  NodeSettingsPageState createState() => NodeSettingsPageState();
 }
 
-class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
+class NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
   String _selectedNetwork = 'mainnet';
   NodeConfig? _selectedNode;
 
@@ -22,7 +24,7 @@ class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
   }
 
   void _loadSavedSettings() async {
-    final prefs = await SharedPreferencesInstance.instance;
+    final prefs = SharedPreferencesInstance.instance;
     setState(() {
       _selectedNetwork = prefs.getString('selectedNetwork') ?? 'mainnet';
       final savedNodeHost = prefs.getString('selectedNodeHost');
@@ -41,8 +43,8 @@ class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
     });
   }
 
-  void _saveSettings() async {
-    final prefs = await SharedPreferencesInstance.instance;
+  Future<void> _saveSettings() async {
+    final prefs = SharedPreferencesInstance.instance;
     await prefs.setString('selectedNetwork', _selectedNetwork);
     await prefs.setString('selectedNodeHost', _selectedNode?.host ?? '');
     await prefs.setString(
@@ -52,21 +54,23 @@ class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
       ref.read(nodeConfigProvider.notifier).updateNodeConfig(_selectedNode!);
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('設定を保存しました')),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('設定を保存しました')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('ノード設定')),
+      appBar: AppBar(title: const Text('ノード設定')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ネットワーク選択',
+            const Text('ネットワーク選択',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             DropdownButton<String>(
               value: _selectedNetwork,
@@ -87,8 +91,8 @@ class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20),
-            Text('ノード選択',
+            const SizedBox(height: 20),
+            const Text('ノード選択',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             if (_selectedNode != null)
               DropdownButton<NodeConfig>(
@@ -109,10 +113,10 @@ class _NodeSettingsPageState extends ConsumerState<NodeSettingsPage> {
                     }).toList() ??
                     [],
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveSettings,
-              child: Text('保存'),
+              child: const Text('保存'),
             ),
           ],
         ),
