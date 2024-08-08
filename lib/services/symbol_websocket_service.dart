@@ -30,6 +30,7 @@ class SymbolWebSocketService {
         (data) {
           try {
             final Map<String, dynamic> response = json.decode(data);
+            logger.d(response);
             if (response.containsKey('uid')) {
               _uid = response['uid'];
               logger.d('UID received: $_uid');
