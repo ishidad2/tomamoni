@@ -1,4 +1,5 @@
 import 'package:symbol_rest_client/api.dart';
+import '../utils/logger.dart';
 
 class NamespaceRepository {
   final NamespaceRoutesApi _namespaceApi;
@@ -12,7 +13,7 @@ class NamespaceRepository {
     const int maxPage = 20; // 適切な最大ページ数を設定
 
     while (true) {
-      print('Fetching namespaces page $pageNumber');
+      logger.d('Fetching namespaces page $pageNumber');
       try {
         final response = await _namespaceApi.searchNamespaces(
           pageNumber: pageNumber,
@@ -30,9 +31,9 @@ class NamespaceRepository {
         if (pageNumber >= maxPage) break;
         pageNumber++;
       } catch (e) {
-        print('Error fetching namespaces: $e');
+        logger.e('Error fetching namespaces: $e');
         if (e is NoSuchMethodError) {
-          print('NoSuchMethodError: ${e}');
+          logger.e('NoSuchMethodError: $e');
         }
         break;
       }
@@ -50,19 +51,16 @@ class NamespaceRepository {
       for (var mosaic in mosaicNames?.mosaicNames ?? []) {
         if (mosaic.names.isNotEmpty) {
           String name = mosaic.names[0];
-          // print('===========================');
-          // print(mosaic.names);
           if (name.split('.').contains('tomato')) {
             tomatoMosaics.add(name);
           }
         }
       }
     } catch (e) {
-      print('Error fetching mosaic names: $e');
+      logger.e('Error fetching mosaic names: $e');
     }
 
-    print('===========================');
-    print(tomatoMosaics);
+    logger.d(tomatoMosaics);
 
     return tomatoMosaics;
   }

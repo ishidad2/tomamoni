@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:symbol_rest_client/api.dart';
 import '../providers/node_config_provider.dart';
 import '../repositories/namespace_repository.dart';
+import '../utils/logger.dart';
 
 final namespaceApiProvider = Provider<NamespaceRoutesApi>((ref) {
   final nodeConfig = ref.watch(nodeConfigProvider);
-  print('NamespaceRoutesApi: ${nodeConfig.host}');
-  print('============================');
+  logger.d('NamespaceRoutesApi: ${nodeConfig.host}');
   final apiClient = ApiClient(basePath: nodeConfig.host);
   return NamespaceRoutesApi(apiClient);
 });

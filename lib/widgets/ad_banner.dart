@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../utils/logger.dart';
 
 class AdBanner extends StatefulWidget {
   const AdBanner({super.key});
@@ -32,7 +33,7 @@ class AdBannerState extends State<AdBanner> {
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          print('Ad failed to load: $error');
+          logger.e('Ad failed to load: $error');
         },
       ),
     );

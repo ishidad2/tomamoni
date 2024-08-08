@@ -17,6 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   fl_chart: ^0.68.0
   shared_preferences: ^2.2.3
+  logger: ^2.4.0
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../config/config.dart';
 import '../providers/node_config_provider.dart';
+import '../utils/logger.dart';
 
 final symbolWebSocketServiceProvider = Provider<SymbolWebSocketService>((ref) {
   final nodeConfig = ref.watch(nodeConfigProvider);
@@ -23,32 +24,34 @@ class SymbolWebSocketService {
     try {
       _webSocket = await WebSocket.connect(nodeConfig.websocket);
 
-      print('WebSocket connection opened.');
+      logger.d('WebSocket connection opened.');
 
       _webSocket!.listen(
         (data) {
-          print('Data received: $data');
-
-          final Map<String, dynamic> response = json.decode(data);
-          if (response.containsKey('uid')) {
-            _uid = response['uid'];
-            print('UID received: $_uid');
-            _subscribeToBlockChannel();
-          } else if (response.containsKey('data') &&
-              response['data'].containsKey('block')) {
-            _blockController.add(response['data']['block']);
+          try {
+            final Map<String, dynamic> response = json.decode(data);
+            if (response.containsKey('uid')) {
+              _uid = response['uid'];
+              logger.d('UID received: $_uid');
+              _subscribeToBlockChannel();
+            } else if (response.containsKey('data') &&
+                response['data'].containsKey('block')) {
+              _blockController.add(response['data']['block']);
+            }
+          } catch (e) {
+            logger.e('Error parsing WebSocket message: $e');
           }
         },
         onDone: () {
-          print('WebSocket connection closed.');
+          logger.e('WebSocket connection closed.');
           _blockController.close();
         },
         onError: (error) {
-          print('WebSocket error: $error');
+          logger.e('WebSocket error: $error');
         },
       );
     } catch (error) {
-      print('Error connecting to WebSocket: $error');
+      logger.e('Error connecting to WebSocket: $error');
     }
   }
 
@@ -62,7 +65,7 @@ class SymbolWebSocketService {
     if (_webSocket != null && _webSocket!.readyState == WebSocket.open) {
       _webSocket!.add(message);
     } else {
-      print('WebSocket is not connected.');
+      logger.e('WebSocket is not connected.');
     }
   }
 

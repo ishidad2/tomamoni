@@ -1,4 +1,5 @@
 import 'package:symbol_rest_client/api.dart';
+import '../utils/logger.dart';
 
 class TransactionRepository {
   final TransactionRoutesApi _transactionApi;
@@ -12,7 +13,7 @@ class TransactionRepository {
           await _transactionApi.searchConfirmedTransactions(height: height);
       return response?.data ?? [];
     } catch (e) {
-      print('Error fetching transactions: $e');
+      logger.e('Error fetching transactions: $e');
       return [];
     }
   }
